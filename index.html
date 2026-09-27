@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A&amp;J</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #0b050f;
+            background-image: radial-gradient(circle at center, #1b0c24 0%, #07030a 100%);
+            font-family: 'Poppins', sans-serif;
+            color: #d8ccd6;
+            perspective: 2000px;
+        }
+
+        /* --- CONTENEDOR DE LA ESTANTERÍA INICIAL (A&J + LIBROS) --- */
+        #capa-inicial {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: url('https://imgur.com/0ZDnKha.png') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 500;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        #capa-inicial.oculto {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        #capa-animacion {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            z-index: 10;
+        }
+
+        .letra {
+            font-family: 'Playfair Display', serif;
+            font-size: 8rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 0 0 25px rgba(255, 255, 255, 0.8), 0 0 50px rgba(180, 130, 220, 0.6);
+            opacity: 0;
+            transform: translateY(-120vh);
+            animation: caidaRebote 2.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        .letra:nth-child(1) { animation-delay: 0.3s; }
+        .letra:nth-child(2) { animation-delay: 0.6s; }
+        .letra:nth-child(3) { animation-delay: 0.9s; }
+
+        @keyframes caidaRebote {
+            0% {
+                transform: translateY(-120vh);
+                opacity: 0;
+            }
+            60% {
+                transform: translateY(25px);
+                opacity: 1;
+            }
+            75% {
+                transform: translateY(-15px);
+                opacity: 1;
+            }
+            88% {
+                transform: translateY(8px);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .salida-abajo {
+            animation: salidaAbajoAnim 0.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards !important;
+        }
+
+        @keyframes salidaAbajoAnim {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(120vh);
+                opacity: 0;
+            }
+        }
+
+        .estanteria-libros {
+            position: absolute;
+            top: 15%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            transform-style: preserve-3d;
+        }
+
+        .estanteria-libros.visible {
+            opacity: 1;
+        }
+
+        /* --- BOTONES DE LIBROS TRIDIMENSIONALES Y MEJORADOS --- */
+        .libro-btn {
+            width: 210px;
+            height: 280px;
+            background: linear-gradient(135deg, #2b1238 0%, #100416 100%);
+            border: 2px solid #6b268f;
+            border-radius: 4px 14px 14px 4px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 15px 20px 25px;
+            text-align: center;
+            box-shadow: 
+                -12px 15px 30px rgba(0, 0, 0, 0.8),
+                -3px 3px 10px rgba(90, 34, 115, 0.4),
+                inset 15px 0 25px rgba(0, 0, 0, 0.6),
+                inset 0 0 20px rgba(138, 43, 226, 0.2);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            transform: perspective(1000px) rotateY(-8deg) rotateX(4deg);
+            transform-origin: left center;
+        }
+
+        .libro-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(90deg, #07020a 0%, #200a2b 50%, #07020a 100%);
+            border-right: 2px solid rgba(177, 66, 232, 0.3);
+            box-shadow: inset -2px 0 5px rgba(0, 0, 0, 0.8);
+        }
+
+        .libro-btn::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 20px;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.08) 2px, transparent 2px),
+                linear-gradient(rgba(0, 0, 0, 0.5) 1px, transparent 1px);
+            background-size: 100% 35px;
+            pointer-events: none;
+        }
+
+        .libro-btn:hover {
+            transform: perspective(1000px) rotateY(0deg) rotateX(0deg) translateY(-8px) scale(1.03);
+            border-color: #b142e8;
+            box-shadow: 
+                -5px 20px 40px rgba(138, 43, 226, 0.4),
+                0 10px 25px rgba(0, 0, 0, 0.9),
+                inset 10px 0 20px rgba(0, 0, 0, 0.4),
+                inset 0 0 25px rgba(186, 85, 211, 0.4);
+        }
+
+        .libro-titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            font-style: italic;
+            color: #f3e5f5;
+            line-height: 1.4;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+            padding: 0 5px 0 10px;
+            z-index: 2;
+        }
+
+        /* --- VENTANAS MODALES / CARTAS GÓTICAS --- */
+        .modal-gotico {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(4, 2, 7, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .modal-gotico.activo {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .carta-gotica {
+            width: 85vw;
+            max-width: 650px;
+            height: 80vh;
+            max-height: 700px;
+            background: linear-gradient(135deg, #0d0612 0%, #050207 100%);
+            border: 2px solid #7b2cbf;
+            border-radius: 10px;
+            box-shadow: 
+                0 0 40px rgba(123, 44, 191, 0.5),
+                inset 0 0 30px rgba(0, 0, 0, 0.9),
+                inset 0 0 15px rgba(157, 78, 221, 0.2);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carta-gotica::before {
+            content: '';
+            position: absolute;
+            top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1px dashed rgba(157, 78, 221, 0.3);
+            pointer-events: none;
+            border-radius: 6px;
+        }
+
+        .carta-titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: #e0aaff;
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(157, 78, 221, 0.8);
+            border-bottom: 1px solid rgba(123, 44, 191, 0.4);
+            padding-bottom: 15px;
+        }
+
+        .carta-cuerpo {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #d8b4fe;
+            text-align: justify;
+            font-style: italic;
+        }
+
+        .carta-cuerpo::-webkit-scrollbar {
+            width: 5px;
+        }
+        .carta-cuerpo::-webkit-scrollbar-thumb {
+            background: #5a189a;
+            border-radius: 4px;
+        }
+
+        .carta-footer {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-top: 1px solid rgba(123, 44, 191, 0.4);
+            padding-top: 15px;
+        }
+
+        .btn-gotico {
+            background-color: #240046;
+            border: 1px solid #7b2cbf;
+            color: #e0aaff;
+            padding: 10px 30px;
+            font-family: 'Poppins', sans-serif;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            box-shadow: 0 0 15px rgba(123, 44, 191, 0.3);
+        }
+
+        .btn-gotico:hover {
+            background-color: #3c096c;
+            border-color: #c77dff;
+            color: #ffffff;
+            box-shadow: 0 0 25px rgba(199, 125, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        /* --- FONDO DE CUATRO BOTONES (SEGUNDO LIBRO EXPANDIDO) --- */
+        #fondo-cuatro-botones {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: url('https://i.imgur.com/5YRJ5hD.jpeg') no-repeat center center;
+            background-size: cover;
+            z-index: 600;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s cubic-bezier(0.645, 0.045, 0.355, 1), visibility 1s ease;
+        }
+
+        #fondo-cuatro-botones.activo {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .titulo-cuatro-botones {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: #ffffff;
+            margin-top: 60px;
+            margin-bottom: 20px;
+            font-style: italic;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.9), 0 0 10px rgba(140, 42, 180, 0.8);
+            text-align: center;
+            z-index: 2;
+        }
+
+        .contenedor-grid-botones {
+            position: absolute;
+            top: 52%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 85vw;
+            max-width: 1000px;
+            z-index: 2;
+        }
+
+        /* --- ESTILO COMÚN PARA BOTONES DE IMAGEN PURA (PNG SOBRE LA MESA) --- */
+        .btn-solo-imagen {
+            background: transparent;
+            border: none;
+            padding: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            width: 160px;
+            height: 190px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-solo-imagen img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.6));
+        }
+
+        .btn-solo-imagen:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(138, 43, 226, 0.6);
+        }
+
+        .btn-solo-imagen:hover img {
+            transform: scale(1.05);
+        }
+
+        .btn-volver-estanteria {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(42, 17, 56, 0.8);
+            backdrop-filter: blur(5px);
+            border: 1px solid #5b2875;
+            color: #f1e6f5;
+            padding: 10px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            z-index: 2;
+        }
+
+        .btn-volver-estanteria:hover {
+            background-color: #3d1b52;
+            color: #fff;
+            border-color: #8c2ab4;
+            transform: translateX(-50%) translateY(-2px);
+        }
+
+        /* --- ESTILOS DEL LIBRO / INTERIOR (PRIMER LIBRO) --- */
+        .fondo-rosas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; opacity: 0.15;
+            background-image: radial-gradient(#3c1842 1px, transparent 1px), radial-gradient(#1e0a24 1px, #0b050f 1px);
+            background-size: 40px 40px; background-position: 0 0, 20px 20px;
+        }
+        
+        #frases-fondo {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden;
+        }
+        .frase-flotante {
+            position: absolute; font-family: 'Playfair Display', serif; font-style: italic;
+            color: rgba(220, 170, 245, 0.7); font-size: 1.1rem; white-space: nowrap;
+            transition: opacity 1.2s ease-in-out; opacity: 0;
+            text-shadow: 0 0 10px rgba(180, 80, 220, 0.4);
+        }
+
+        .libro-escenario {
+            width: 90vw; max-width: 950px; height: 85vh; max-height: 620px;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            transform-style: preserve-3d; z-index: 2; transition: opacity 0.5s ease;
+            opacity: 0; pointer-events: none;
+        }
+        .libro-escenario.activo { opacity: 1; pointer-events: auto; }
+        .libro-escenario.oculto { opacity: 0; pointer-events: none; }
+
+        .libro { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 25px rgba(100, 20, 120, 0.2); border-radius: 8px; display: flex; }
+        
+        .cubierta {
+            position: absolute; width: 100%; height: 100%; background: #110714;
+            background-image: linear-gradient(135deg, #050207 0%, #170a1f 50%, #050207 100%);
+            border: 2px solid #4a215c; border-radius: 8px 16px 16px 8px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            z-index: 100; transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1); transform-origin: left;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.9), 0 0 15px rgba(74, 33, 92, 0.5); padding: 40px; border-left: 14px solid #08030a;
+        }
+        .cubierta.abierta { transform: rotateY(-180deg); pointer-events: none; }
+        
+        .contenedor-foto {
+            width: 220px; height: 115px; border-radius: 8px; border: 2px solid #8c2ab4;
+            box-shadow: 0 0 15px rgba(140, 42, 180, 0.5); margin-bottom: 15px; overflow: hidden;
+            display: flex; justify-content: center; align-items: center; background: #1a0b22;
+        }
+        .contenedor-foto img { width: 100%; height: 100%; object-fit: cover; }
+        .cubierta h1 { font-family: 'Playfair Display', serif; color: #e6c6f2; font-size: 2.3rem; margin-bottom: 15px; text-shadow: 0 2px 10px rgba(140, 40, 180, 0.5); }
+        .cubierta p { font-family: 'Playfair Display', serif; color: #b091be; font-size: 1.15rem; font-style: italic; margin-bottom: 25px; }
+
+        .hoja-contenedor { position: absolute; width: 100%; height: 100%; display: flex; background: #120b17; border-radius: 0 8px 8px 0; border: 1px solid #2e143b; overflow: hidden; transform-style: preserve-3d; }
+        .libro::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 44px; transform: translateX(-50%); background: linear-gradient(90deg, rgba(0,0,0,0.6), rgba(20,8,28,0.9) 50%, rgba(0,0,0,0.6)); z-index: 50; pointer-events: none; }
+        
+        .pagina-doble { display: flex; width: 100%; height: 100%; position: absolute; top: 0; left: 0; backface-visibility: hidden; }
+        .pagina-izquierda, .pagina-derecha { flex: 1; padding: 25px 35px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        .pagina-izquierda { border-right: 1px solid #2e143b; background: #120b17; overflow-y: auto; max-height: 100%; }
+        .pagina-izquierda::-webkit-scrollbar, .pagina-derecha::-webkit-scrollbar { width: 4px; }
+        .pagina-izquierda::-webkit-scrollbar-thumb, .pagina-derecha::-webkit-scrollbar-thumb { background: #3c1c4f; border-radius: 4px; }
+        
+        h2 { font-family: 'Playfair Display', serif; color: #d4a5e8; font-size: 1.5rem; margin-bottom: 8px; border-bottom: 1px solid #3c1c4f; padding-bottom: 4px; }
+        p { font-family: 'Playfair Display', serif; font-size: 0.92rem; line-height: 1.6; color: #c9b8cc; margin-bottom: 0; text-align: justify; }
+        .btn { background-color: #2a1138; border: 1px solid #5b2875; color: #f1e6f5; padding: 8px 22px; font-family: 'Poppins', sans-serif; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; align-self: center; font-size: 0.85rem; z-index: 5; }
+        .btn:hover { background-color: #431b57; border-color: #8c2ab4; box-shadow: 0 0 15px rgba(140, 42, 180, 0.4); }
+        .grupo-botones { display: flex; gap: 10px; justify-content: center; align-self: center; }
+        
+        .caja-info { background: rgba(42, 17, 56, 0.4); border: 1px solid #4a215c; padding: 8px 12px; border-radius: 6px; text-align: center; margin: 2px 0; }
+        .contador-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin: 3px 0; }
+        .unidad-tiempo { background: rgba(30, 10, 40, 0.6); border: 1px solid #5b2875; border-radius: 4px; padding: 4px 2px; text-align: center; }
+        .unidad-tiempo span { display: block; font-size: 0.9rem; font-weight: bold; color: #e6c6f2; }
+        .unidad-tiempo small { font-size: 0.55rem; color: #a98cb8; text-transform: uppercase; }
+        
+        .seccion-libro {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            transform-origin: left center;
+            transform-style: preserve-3d;
+            transition: transform 0.9s cubic-bezier(0.645, 0.045, 0.355, 1), box-shadow 0.9s ease;
+            background: #120b17;
+        }
+
+        .paginacion { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: #7d6b82; border-top: 1px solid #2e143b; padding-top: 4px; margin-top: auto; }
+
+        /* --- PÁGINA 7 GIGANTE CON LLUVIA MASIVA --- */
+        #pagina-7-mega {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #0b050f;
+            z-index: 200;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        #pagina-7-mega.activa { display: flex; }
+        
+        #contenedor-te-amos {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 201;
+        }
+
+        .te-amo-movil {
+            position: absolute;
+            font-family: 'Playfair Display', serif;
+            font-weight: bold;
+            font-style: italic;
+            white-space: nowrap;
+            user-select: none;
+            pointer-events: none;
+            animation: flotarTeAmoMassive linear infinite;
+            text-shadow: 0 0 10px rgba(212, 165, 232, 0.4);
+        }
+
+        @keyframes flotarTeAmoMassive {
+            0% {
+                transform: translateY(105vh) scale(0.7) rotate(0deg);
+                opacity: 0;
+            }
+            15% { opacity: 0.85; }
+            85% { opacity: 0.85; }
+            100% {
+                transform: translateY(-15vh) scale(1.4) rotate(15deg);
+                opacity: 0;
+            }
+        }
+
+        #texto-imposible {
+            font-family: 'Playfair Display', serif;
+            color: #1a0822;
+            font-size: 1px;
+            line-height: 1;
+            text-align: center;
+            pointer-events: none;
+            position: absolute;
+            z-index: 202;
+        }
+        #btn-siete-a-ocho {
+            font-size: 1.3rem;
+            padding: 18px 50px;
+            background-color: #110714;
+            border: 2px solid #8c2ab4;
+            color: #f1e6f5;
+            cursor: pointer;
+            z-index: 205;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(140, 42, 180, 0.8);
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        #btn-siete-a-ocho:hover {
+            background-color: #5b2875;
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(140, 42, 180, 1);
+        }
+    </style>
+</head>
+<body>
+    <div class="fondo-rosas"></div>
+    <div id="frases-fondo"></div>
+
+    <!-- CAPA INICIAL: ESTANTERÍA Y ANIMACIÓN A&J -->
+    <div id="capa-inicial">
+        <div id="capa-animacion">
+            <span class="letra">A</span>
+            <span class="letra">&amp;</span>
+            <span class="letra">J</span>
+        </div>
+
+        <div class="estanteria-libros" id="estanteria">
+            <!-- Libro 1 -->
+            <a href="#" class="libro-btn" onclick="abrirLibroPrincipal(); return false;">
+                <span class="libro-titulo">El comienzo de algo eterno</span>
+            </a>
+
+            <!-- Libro 2 -->
+            <a href="#" class="libro-btn" onclick="abrirFondoCuatroBotones(); return false;">
+                <span class="libro-titulo">Los tres mejores meses de mi vida</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- VENTANA MODAL 1: NUESTRA HISTORIA -->
+    <div id="modal-nuestra-historia" class="modal-gotico">
+        <div class="carta-gotica">
+            <h2 class="carta-titulo">Los mejores 3 meses 🖤</h2>
+            <div class="carta-cuerpo">
+                <p>Todavía recuerdo cuando nos conocimos sin saber que íbamos a llegar a todo esto, desde los primeros días que hablamos ya sentí esa conexión, y a raíz de ahi poco a poco te fuiste convirtiendo en una de las personas mas importantes de mi vida. Sin darme cuenta empecé a necesitarte en el día a día, a querer saber todo de ti y mostrarte también todo de mi. Te convertiste en una parte de mi vida que por nada en el mundo querría perder, y así fue cuando descubrí que estaba enamorado. Me empecé a sentir cada vez mejor, gracias a ti se lo que es el amor y como se siente, recuerdo con muchísimo cariño cada conversación que hemos tenido, ya sean tonterías o cosas tan personales que no se les dice a cualquiera y hablar de todo ello contigo me hace la persona más feliz del mundo.</p>
+                <br>
+                <p>La distancia duele cada día más pero pasar cada momento contigo, aunque sea corto lo hace más leve, te siento cerca, hablar de cualquier cosa contigo se convierte en la mejor experiencia que se pueda tener y por eso deseo con ansias el día que podamos hacer todas las cosas que hemos planeado hasta ahora y las que quedan por planear, porque se que estando contigo cualquier cosa se vuelve especial.
+
+Hemos tenido momentos complicados, momentos en los que no nos hemos entendido, hemos visto cosas con un punto de vista diferente o incluso hemos sentido miedo de que algo no funcionara, pero para mi todo eso forma parte de nuestra historia, porque seguimos aquí, hablando, entendiéndonos y eligiéndonos. A pesar de todo creo que eso es lo importante.
+</p>
+                <br>
+                <p>Mi amor, te has convertido en lo mejor que me ha pasado, en quien puedo confiar como nunca antes he confiado en alguien y eres la unica persona con la que me apetece hablar incluso cuando no me apetece hablar con nadie. Estos tres meses han sido maravillosos, puede parecer muy poco tiempo pero para mi es muy especial, pienso en todo lo que hemos vivido y se me alegra el día, el tiempo está pasando muy rápido y aunque con la distancia todo parezca más difícil estoy seguro de que antes de que nos demos cuenta ya podremos vernos, estar juntos y hacer realidad todos esos planes que tantas veces hemos imaginado, no tengo ninguna duda. Me hace muy feliz mirar nuestro pasado juntos, pero mas feliz aún me hace pensar en el futuro, todo los que nos queda, una vida entera por delante, esto solo es el principio. 
+
+Se que te lo digo demasiado pero te amo mucho mi amor, te amo demasiado y voy a estar agradecido toda mi vida por haberte conocido y por poder compartir todo esto contigo.</p>
+            </div>
+            <div class="carta-footer">
+                <button class="btn-gotico" onclick="cerrarModal('modal-nuestra-historia')">Cerrar 🖤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VENTANA MODAL 2: COSAS QUE QUIZÁ NO TE DIGO LO SUFICIENTE -->
+    <div id="modal-cosas-que-quizas" class="modal-gotico">
+        <div class="carta-gotica">
+            <h2 class="carta-titulo">Cosas que quizás no te digo lo suficiente 🖤</h2>
+            <div class="carta-cuerpo">
+                <p>- Mi amor me gustas, pero no solo eso, también te admiro, amo tu forma de pensar, tus ideas, tu personalidad, tus locuras y esa manera tuya de ver las cosas incluso cuando pensamos diferente amo escucharte porque eres tu quien está pensando, me encanta que seas tu, cada pequeña parte de ti la adoro con todo mi ser</p>
+                <br>
+                <p>- Alguna vez te lo he dicho pero la forma en la que confías en mi y me confías cosas personales significa mucho para mi, al igual que confiar en ti para contarte las mías lo amo, me fascina que podamos hablar de cualquier cosa y que todo sea comodo, es algo que nunca me ha pasado con nadie y que sea contigo me hace super feliz</p>
+                <br>
+                <p>- Me encanta que contigo puedo ser yo mismo, decir mis tonterías, hablar de cosas serias, contarte mis cosas, me encanta que contigo puedo ser yo y me encanta que podamos ser así, solo nosotros</p>
+                <br>
+                <p>- Todo tu cariño lo valoro muchísimo, aunque sea el mínimo acto, cada vez que me dices que me amas o me llamas de alguna forma bonita lo leo 800 veces porque me encanta y me hace sentir super feliz y amado por el amor de mi vida</p>
+                <br>
+                <p>- Me haces sentir mejor en todos los sentidos, ya puedo tener un día terrible, estar muy cansado, agobiado o lo que sea que hablar contigo siempre me tranquiliza y me pone de muy buen humor, no me quiero ni imaginar la cara de tonto que se me pone cada vez que leo un mensaje tuyo</p>
+                <br>
+                <p>- Me haces mejorar como persona y no porque vaya a cambiar, si no que quiero ser mejor para poder cuidar de ti, entenderte, tener más iniciativa y poder ser el novio que te mereces, porque te mereces lo mejor</p>
+                <br>
+                <p>- Puede que seamos diferentes en varios aspectos, pero me gusta, tenemos muchas cosas en común, pero hemos hablado de esto y quiero que sepas que que seas diferente a mí me encanta, amo tus gustos, tu estilo, tu manera de pensar aunque sean distintas y quiero conocer esas partes de ti aunque no sean iguales a las mías</p>
+                <br>
+                <p>- Muchas veces pienso en todos los planes que tenemos pendientes y vivo con el deseo de que ocurran ya, tanto planes como conversaciones, lugares a los que queremos viajar y sobre todo el dia que la distancia deje de ser una parte de nosotros</p>
+                <br>
+                <p>- Te doy las gracias muy a menudo y es porque vivo agradecido de tenerte y que hayas dejado que entre en tu vida, pienso que entre todas las personas que existen que sea justamente yo me hace muy afortunado, tengo mucha suerte de que hayas decidido compartir tu vida conmigo</p>
+                <br>
+                <p>- Mi amor esto te lo he dicho varias veces pero mientras no hablamos mi cabeza no hace más que pensar en ti, muchísimas cosas me recuerdan a ti y he llegado hasta a apuntarme cosas que quería contarte para que no se me olvidaran</p>
+                <br>
+                <p>- Cada risa tuya, sea en audio o en chat me alegra la vida, amo verte feliz y amo verte disfrutando y pasándolo bien con cualquier cosa, tu felicidad es mi felicidad</p>
+                <br>
+                <p>Y aun podría seguir pero quiero que sepas que si estas cosas te las digo poco es porque ya son parte de mi, me he acostumbrado a ello, a quererte o a pensar en ti y debería decírtelo más, pero en lo que tengo claro que nunca me acostumbraré es a valorar el tenerte, porque no dejo de sentir constantemente que es una maravilla que estés en mi vida</p>
+                <br>
+                <p>Y aunque te lo diga todos los dias porque no puedo evitar sentir lo que siento quiero decirte que te amo, te amo mas que nada con todo mi ser y va a ser así siempre</p>
+            </div>
+            <div class="carta-footer">
+                <button class="btn-gotico" onclick="cerrarModal('modal-cosas-que-quizas')">Cerrar 🖤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VENTANA MODAL 3: SPOTIFY -->
+    <div id="modal-spotify" class="modal-gotico">
+        <div class="carta-gotica" style="max-width: 700px; height: 85vh; padding: 30px 40px;">
+            <div style="text-align: center; margin-bottom: 12px; border-bottom: 1px solid rgba(123, 44, 191, 0.4); padding-bottom: 10px;">
+                <h2 class="carta-titulo" style="margin-bottom: 4px; border-bottom: none; padding-bottom: 0; font-size: 1.6rem;">Te lo dedico 🖤</h2>
+                <p style="font-family: 'Playfair Display', serif; font-size: 0.9rem; font-style: italic; color: #b091be; margin-top: 2px;">Mi amorcito te he querido dedicar algunas canciones que me gustan, puede que no sean tu estilo o no te gusten pero queria enseñartelas porque cada vez que escucho alguna cancion que hable de amor no puedo evitar pensar en ti, por eso he escogido algunas porque se que amas la musica y bueno, asi conoces también un poco de lo que escucho. </p>
+            </div>
+            
+            <div class="carta-cuerpo" style="display: flex; flex-direction: column; overflow: hidden; padding-right: 0; gap: 8px;">
+                <div style="width: 100%; flex: 1; border-radius: 12px; overflow: hidden; border: 1px solid #7b2cbf;">
+                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/1oZBFeTC13boJKyc5tlsVt?utm_source=generator&theme=0" width="100%" height="100%" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                </div>
+                <div style="text-align: center; flex-shrink: 0;">
+                    <a href="https://open.spotify.com/playlist/1oZBFeTC13boJKyc5tlsVt?si=40b3f5bb13da407d" target="_blank" class="btn-gotico" style="text-decoration: none; display: inline-block; padding: 8px 20px; font-size: 0.85rem; background-color: #3c096c; border-color: #c77dff;">
+                        Abrir playlist completa en Spotify 
+                    </a>
+                </div>
+            </div>
+            <div class="carta-footer" style="margin-top: 10px; padding-top: 10px;">
+                <button class="btn-gotico" onclick="cerrarModal('modal-spotify')">Cerrar 🖤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VENTANA MODAL 4: RECUERDOS EXTRA (NUEVA SECCIÓN) -->
+    <div id="modal-recuerdos-extra" class="modal-gotico">
+        <div class="carta-gotica">
+            <h2 class="carta-titulo">ARI TE AMO 🖤</h2>
+            <div class="carta-cuerpo">
+                <p>Mi amor te amo muhisimo y se que nunca voy a poder explicarte con lo que siento por ti porque no hay palabras suficientes pero quiero intentarlo aunque se que me voy a quedar muy corto.</p>
+                <br>
+                <p>Me sigue sorprendiendo la cantidad de amor que siento por ti, al igual que todos mis sentimientos hacia ti, no sabía que una persona podría llegar a significar tanto para alguien hasta que te conocí, cambias mi forma de ver las cosas, me haces sonreir a diario y eso que aun estás a través de una pantalla. Eres una parte de mi, y siento como si me faltara una parte de antes que no sabía ni que existia y esa parte eres tu, ahora que estoy contigo me siento completo. Amo absolutamente todo de ti, hasta las cosas mas pequeñas que alomejor ni siquiera te das cuenta pero a mi me encantan simplemente porque son tuyas.</p>
+                <br>
+                <p>Tu me haces sentir querido, comprendido y acompañado de una manera que nunca había sentido y a veces incluso me da miedo lo mucho que significas para mi porque nunca antes nadie me había importado tanto. Quiero que sepas que conocerte es una de las cosas más bonitas que me ha pasado en mi vida, no por lo que haces por mi, si no porque eres tu. No necesito que seas perfecta (que lo eres) ni que pensemos igual, te quiero a ti, y a cada parte de ti que te hace ser quien eres.</p>
+                <br>
+                <p>Algún dia recordaremos esto como nuestros inicios y pensaré en como algo me ha podido cambiar tanto la vida para bien como tenerte a ti. Antes de ti no sabía lo que se sentía amar a alguien ni como se sentía que te amen pero contigo lo descubrí, es hermoso ver como alguen se convierte en una parte tan importante de tu vida.</p>
+                <br>
+                <p>Gracias por existir mi vida, gracias por haberme elegido, por haberme dejado entrar en tu vida y gracias por dejarme amarte. Muchas veces me pregunto si estoy siendo buen novio, si estoy haciendo las cosas bien, me preocupa no ser suficiente o equivocarme, y por eso uno de mis objetivos es mejorar como persona y como novio, para que puedas estar orgullosa y hacerte todo lo feliz que pueda, porque me niego a dejarte pasarlo mal tu sola por cualquier cosa, aquí me tienes a mi, porque te voy a apoyar en todo siempre, te voy a acompañar, no quiero que nunca te sientas sola, porque quiero tu felicidad porque la mereces. Lo que quiero es escucharte, aprender contigo y cuidarte mientras seguimos siendo nosotros y cuidando algo que es de los dos.</p>
+                <br>
+                <p>Y te vuelvo a repetir lo orgulloso que estoy de que nuestras vidas se hayan cruzado y poder compartir todo contigo. Te amo muchísimo mi amor, muchísimo mas de lo que se explicar.</p>
+                <br>
+                <p>Felices tres meses mi amor, gracias por ser tu, te amo.</p>
+            </div>
+            <div class="carta-footer">
+                <button class="btn-gotico" onclick="cerrarModal('modal-recuerdos-extra')">Cerrar 🖤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FONDO DE CUATRO BOTONES (SEGUNDO LIBRO) -->
+    <div id="fondo-cuatro-botones">
+        <h2 class="titulo-cuatro-botones">Los tres mejores meses de mi vida 🖤</h2>
+        
+        <div class="contenedor-grid-botones">
+            <!-- Botón 1 -->
+            <button class="btn-solo-imagen" onclick="abrirModal('modal-nuestra-historia')">
+                <img src="https://i.imgur.com/XmvNZmS.png" alt="Nuestra Historia">
+            </button>
+
+            <!-- Botón 2 -->
+            <button class="btn-solo-imagen" onclick="abrirModal('modal-cosas-que-quizas')">
+                <img src="https://i.imgur.com/P4M0fDQ.png" alt="Cosas que quizás no te digo lo suficiente">
+            </button>
+            
+            <!-- Botón 3 -->
+            <button class="btn-solo-imagen" onclick="abrirModal('modal-spotify')">
+                <img src="https://i.imgur.com/450l6bI.png" alt="Capítulo 3">
+            </button>
+
+            <!-- Botón 4: Modificado para abrir la nueva ventana modal -->
+            <button class="btn-solo-imagen" onclick="abrirModal('modal-recuerdos-extra')">
+                <img src="https://i.imgur.com/yWro2da.png" alt="Recuerdos extra">
+            </button>
+        </div>
+
+        <button class="btn-volver-estanteria" onclick="cerrarFondoCuatroBotones()">⬅ Volver a la estantería</button>
+    </div>
+
+    <!-- LIBRO PRINCIPAL INTERACTIVO -->
+    <div class="libro-escenario" id="libro-contenedor-principal">
+        <div class="libro" id="libro-real">
+            <div class="cubierta" id="cubierta">
+                <div class="contenedor-foto">
+                    <img src="https://i.imgur.com/xLxJlbJ.jpg" alt="Nuestra Foto Minecraft Portada">
+                </div>
+                <h1>Hace un mes aceptaste cambiar mi vida.</h1>
+                <p>Y aún nos queda mucho por delante, pero como el primero no hay ninguno</p>
+                <button class="btn" onclick="document.getElementById('cubierta').classList.add('abierta')">Abrir 🥀</button>
+            </div>
+
+            <div class="hoja-contenedor">
+                <!-- SECCIÓN 1 -->
+                <div class="seccion-libro" id="sec-1" style="z-index: 5;">
+                    <div class="pagina-doble">
+                        <div class="pagina-izquierda">
+                            <h2>Para el amor de mi vida</h2>
+                            <p>Ari, esto que estas a/ punto de leer es algo que nunca se me habría ocurrido hacer, nunca he sido así y pensaba que nunca lo seria pero tu me has sacado esta parte de mi, quiero que sepas que sea como sea que quede el resultado lo he creado con todo el cariño y amor del mundo porque ya sabes que estoy dispuesto a hacer lo que haga falta con tal de verte feliz. Aunque la distancia nos mantenga en lugares distintos, cada segundo compartido contigo se convierte en pura felicidad y te estaré eternamente agradecido por compartir tanta parte de tu tiempo conmigo. Nunca olvidaré ese dia 5 de mayo, en el que hablamos por primera vez sin tener ni idea de lo que te iba a convertir para mi, fué algo mágico, sentí la conexión desde el primer momento y en cuanto me di cuenta ya estaba muy enamorado de ti. Al principio se sentia raro, eran muchos sentimientos nuevos para mi y me di cuenta de que eso era el amor, es mucho mas que una palabra, no lo podría describir ni con todo el tiempo ni vocabulario del mundo. Te amo mucho mi amor</p>
+                            <div class="paginacion"><span>Pág. 1 🖤</span></div>
+                        </div>
+                        <div class="pagina-derecha">
+                            <div class="caja-info">
+                                <span style="font-size: 0.8rem; color: #e6c6f2; margin-bottom: 2px; display: block;">Llevamos juntos exactos:</span>
+                                <div class="contador-grid" id="contador">
+                                    <div class="unidad-tiempo"><span id="dias">0</span><small>Días</small></div>
+                                    <div class="unidad-tiempo"><span id="horas">0</span><small>Horas</small></div>
+                                    <div class="unidad-tiempo"><span id="minutos">0</span><small>Min</small></div>
+                                    <div class="unidad-tiempo"><span id="segundos">0</span><small>Seg</small></div>
+                                </div>
+                            </div>
+                            <div class="caja-info" style="padding: 5px;">
+                                <p style="font-size: 0.72rem; font-style: italic; color: #d175ff; margin-bottom: 0; line-height: 1.1; text-align: center;">
+                                    30 días para ti y 29 para tu novio de 8 horas en el futuro
+                                </p>
+                            </div>
+                            
+                            <div class="contenedor-foto" style="width: 100%; height: 120px; margin: 2px 0;">
+                                <img src="https://i.imgur.com/qruPDKQ.jpg" alt="Paisaje Minecraft">
+                            </div>
+
+                            <div style="padding: 4px 0 2px 0; text-align: center;">
+                                <p style="font-family: 'Playfair Display', serif; font-size: 0.92rem; font-style: italic; color: #e2cceb; line-height: 1.4; text-align: center;">
+                                    Volvería a construir mil mundos mas de minecraft si con eso pudiera volver a escuchar ese "sí, acepto" de aquel día
+                                </p>
+                            </div>
+
+                            <hr style="border: none; border-top: 1px solid #3c1c4f; width: 60%; margin: 6px auto;">
+
+                            <div style="padding: 2px 0; text-align: center;">
+                                <p style="font-family: 'Playfair Display', serif; font-size: 0.92rem; font-style: italic; color: #c9b8cc; line-height: 1.4; text-align: center;">
+                                    Ese dia estaba muy nervioso a pesar de que ya sabia la respuesta, pero llevaba dias preperandolo con el objetivo que saliera perfecto, yo nunca me quedé satisfecho de como quedó por la culpa de los errores con los mods pero no me importa porque ahora tengo a la mejor novia que se puede tener.
+                                </p>
+                            </div>
+
+                            <button class="btn" style="width: 100%; margin-top: 6px;" onclick="irSiguiente(1)">Siguiente ➔</button>
+
+                            <div class="paginacion" style="justify-content: flex-end;"><span>Pág. 2 🖤</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 2 -->
+                <div class="seccion-libro" id="sec-2" style="z-index: 4;">
+                    <div class="pagina-doble">
+                        <div class="pagina-izquierda" style="justify-content: center; align-items: center; text-align: center;">
+                            <h2 style="width: 100%; border-bottom: none; margin-bottom: 5px; font-size: 1.3rem;">El comienzo</h2>
+                            
+                            <div class="contenedor-foto" style="width: 100%; height: 130px; margin: 5px 0; border: 1px solid #4a215c;">
+                                <img src="https://i.imgur.com/0AhFwJK.jpg" alt="Primera Conversación">
+                            </div>
+
+                            <p style="font-family: 'Playfair Display', serif; font-size: 1.05rem; font-style: italic; color: #d8ccd6; text-align: center; line-height: 1.4; margin-top: 4px;">
+                                Quién nos iba a decir que un simple "Holaa" acabaría convirtiéndose en mi lugar favorito del mundo.
+                            </p>
+
+                            <div style="margin: 8px 0; width: 100%;">
+                                <span style="font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: bold; font-style: italic; color: #e6c6f2; text-shadow: 0 0 15px rgba(212, 165, 232, 0.6); display: block; letter-spacing: 2px;">
+                                    MUAKKK
+                                </span>
+                            </div>
+
+                            <div style="margin-top: auto; width: 100%;">
+                                <div style="display: flex; justify-content: center; gap: 15px; width: 100%; margin-bottom: 6px;">
+                                    <div style="background: rgba(42, 17, 56, 0.4); border: 1px solid #4a215c; padding: 4px 10px; border-radius: 6px; text-align: center;">
+                                        <span style="font-size: 0.7rem; color: #a98cb8; display: block;">Tú</span>
+                                        <strong style="font-size: 0.85rem; color: #e6c6f2; font-family: 'Poppins', sans-serif;">16:30</strong>
+                                    </div>
+                                    <div style="background: rgba(42, 17, 56, 0.4); border: 1px solid #4a215c; padding: 4px 10px; border-radius: 6px; text-align: center;">
+                                        <span style="font-size: 0.7rem; color: #a98cb8; display: block;">Yo</span>
+                                        <strong style="font-size: 0.85rem; color: #e6c6f2; font-family: 'Poppins', sans-serif;">00:30</strong>
+                                    </div>
+                                </div>
+                                <p style="font-family: 'Playfair Display', serif; font-size: 1.05rem; font-style: italic; color: #b091be; text-align: center; line-height: 1.4;">
+                                    El momento justo de cuando conectamos, diferentes horas pero mismos sentimientos.
+                                </p>
+                            </div>
+
+                            <div class="paginacion" style="width: 100%; margin-top: auto;"><span>Pág. 3 🖤</span></div>
+                        </div>
+
+                        <div class="pagina-derecha" style="justify-content: space-between; text-align: center;">
+                            <div>
+                                <h2>Eternidad</h2>
+                                <p style="text-align: center;">Es muy dificil decir algo del futuro con certeza porque nunca se sabe lo que puede pasar, pero aquello que se siente es porque si que ocurrirá, lo nuestro es cosa del destino y se que nuestro amor será eterno. No hablo de que dure toda la vida, hablo que que dure siempre, haya lo que quiera que haya después de la muerte, o incluso como si no hay nada, siempre va a estar ahí, nunca he estado tan seguro de algo. Duele estar tan lejos pero eso no hace que dos que se aman se rindan, hace que los motive para que consigan verse pronto y estar juntos al fin.</p>
+                            </div>
+
+                            <div class="contenedor-foto" style="width: 100%; height: 260px; margin: 5px 0; border: 1px solid #4a215c; background: #07030a;">
+                                <img src="https://i.imgur.com/owjRYAU.jpg" alt="Nuestra cita en Roblox" style="object-fit: contain;">
+                            </div>
+
+                            <div class="grupo-botones">
+                                <button class="btn" onclick="irAnterior(1)">⬅ Anterior</button>
+                                <button class="btn" onclick="irSiguiente(2)">Siguiente ➔</button>
+                            </div>
+                            <div class="paginacion" style="width: 100%;"><span>Pág. 4 🖤</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 3 -->
+                <div class="seccion-libro" id="sec-3" style="z-index: 3;">
+                    <div class="pagina-doble">
+                        <div class="pagina-izquierda">
+                            <h2>Amo todo de ti</h2>
+                            
+                            <div class="contenedor-foto" style="width: 100%; height: 130px; margin: 8px 0; border: 1px solid #4a215c;">
+                                <img src="https://i.imgur.com/nqFsVMU.jpg" alt="Foto de ella" style="object-fit: cover;">
+                            </div>
+
+                            <p>Mi vida te amo, eres perfecta y me gusta absolutamente todo de ti, amo tu paz, amo tus ojos, amo tu pelo, amo tu humor, amo tu voz, amo tu compañía, amo tus ocurrencias, amo tu paciencia, amo tu manias, amo tu tranquilidad, amo como me haces sentir incluso estando tan lejos de mi, amo tus ideas, amo tu forma de ser, amo tu armonia, amo tu amabilidad, amo tu ganas de cumplir lo que te propones, amo como me tratas, amo tu forma de ser tan tu y aun podría seguir más pero desde un principio no quería poner mucho texto en este libro y me estoy pasando, en resumen, amo absolutamente todo de ti y asi será para siempre. Te amo mucho.</p>
+                            <div class="paginacion"><span>Pág. 5 🖤</span></div>
+                        </div>
+                        <div class="pagina-derecha" style="display: flex; flex-direction: column; justify-content: space-between; text-align: left; overflow-y: auto;">
+                            <div>
+                                <h2>¿Sabías qué?</h2>
+                                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                                    <p style="font-size: 0.92rem; text-align: left; font-style: italic; font-family: 'Playfair Display', serif; line-height: 1.6; color: #c9b8cc;">¿Eres la primera persona con la que imagino un futuro?</p>
+                                    <p style="font-size: 0.92rem; text-align: left; font-style: italic; font-family: 'Playfair Display', serif; line-height: 1.6; color: #c9b8cc;">¿Me haces sonreír todos los días sin darte cuenta?</p>
+                                    <p style="font-size: 0.92rem; text-align: left; font-style: italic; font-family: 'Playfair Display', serif; line-height: 1.6; color: #c9b8cc;">¿Este ha sido el mes más bonito que he vivido?</p>
+                                    <p style="font-size: 0.92rem; text-align: left; font-style: italic; font-family: 'Playfair Display', serif; line-height: 1.6; color: #c9b8cc;">¿Contigo siento que estoy exactamente donde quiero estar?</p>
+                                    <p style="font-size: 0.92rem; text-align: left; font-style: italic; font-family: 'Playfair Display', serif; line-height: 1.6; color: #c9b8cc;">¿Cada noche tengo más ganas de que llegue el día de abrazarte?</p>
+                                    <p style="font-size: 0.92rem; text-align: left; font-style: italic; font-family: 'Playfair Display', serif; line-height: 1.6; color: #c9b8cc;">¿Eres la primera persona por la que me ilusiono así?</p>
+                                    <p style="font-size: 0.92rem; text-align: left; font-style: italic; font-family: 'Playfair Display', serif; line-height: 1.6; color: #c9b8cc;">¿Cada día me enamoro mucho más de ti?</p>
+                                    <p style="font-size: 0.92rem; text-align: left; font-style: italic; font-family: 'Playfair Display', serif; line-height: 1.6; color: #c9b8cc;">¿Nunca había sentito tanta paz hablando con alguien?</p>
+                                    <p style="font-size: 0.92rem; text-align: left; font-style: italic; font-family: 'Playfair Display', serif; line-height: 1.6; color: #c9b8cc;">¿Releo muchas de nuestras conversaciones al esperarte?</p>
+                                    <p style="font-size: 0.92rem; text-align: left; font-style: italic; font-family: 'Playfair Display', serif; line-height: 1.6; color: #c9b8cc;">¿Cada mensaje, reel o tiktok tuyo me alegra el día?</p>
+                                    <p style="font-size: 0.92rem; text-align: left; font-style: italic; font-family: 'Playfair Display', serif; line-height: 1.6; color: #c9b8cc;">¿Cuando veo una puesta de sol pienso en compartirla contigo?</p>
+                                    <p style="font-size: 0.92rem; text-align: left; font-style: italic; font-family: 'Playfair Display', serif; line-height: 1.6; color: #c9b8cc;">¿Todavía me cuesta creer que seas mi novia?</p>
+                                    <p style="font-size: 0.92rem; text-align: left; font-style: italic; font-family: 'Playfair Display', serif; line-height: 1.6; color: #c9b8cc;">¿Eres culpable de que mire el móvil cada dos minutos?</p>
+                                    <p style="font-size: 0.92rem; text-align: left; font-style: italic; font-family: 'Playfair Display', serif; line-height: 1.6; color: #c9b8cc;">¿Me encanta cuando me llamas de maneras bonitas?</p>
+                                </div>
+                            </div>
+
+                            <div class="grupo-botones" style="margin-top: 15px;">
+                                <button class="btn" onclick="irAnterior(2)">⬅ Anterior</button>
+                                <button class="btn" onclick="abrirPaginaMega()">Siguiente ➔</button>
+                            </div>
+                            <div class="paginacion" style="width: 100%; margin-top: 10px;"><span>Pág. 6 🖤</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 4 -->
+                <div class="seccion-libro" id="sec-4" style="z-index: 2;">
+                    <div class="pagina-doble">
+                        <div class="pagina-izquierda" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                            <h2 style="width: 100%; border-bottom: none; margin-bottom: 10px; font-size: 1.4rem;">Sigamos sumando</h2>
+                            
+                            <p style="text-align: center; font-style: italic; color: #c9b8cc; line-height: 1.6; margin-bottom: 15px;">
+                                Cada dia que pasa me alegro mucho más de haberte conocido y mucho más aún por querer quedarte en mi vida. Practicamente acabamos de empezar y ya siento que hemos construido un algo increíble juntos, nos queda toda la vida por delante y solo de pensarlo me emociona. La distancia nos hará pasarlo terriblemente mal si, pero sin embargo soy muy feliz de tenerte aunque sea tan lejos, se que pronto nos veremos y pasaremos los mejores días de nuestra vida.
+                            </p>
+
+                            <div style="background: rgba(42, 17, 56, 0.5); border: 1px solid #8c2ab4; padding: 12px 20px; border-radius: 8px; margin-top: 10px;">
+                                <span style="font-size: 0.85rem; color: #e6c6f2; display: block; font-family: 'Poppins', sans-serif;">Promesa de novio:</span>
+                                <strong style="font-size: 1.1rem; color: #d4a5e8; font-family: 'Playfair Display', serif; font-style: italic;">Cuidarte todos los días y dar lo mejor de mí siempre</strong>
+                            </div>
+
+                            <div class="paginacion" style="width: 100%; margin-top: auto;"><span>Pág. 8 🖤</span></div>
+                        </div>
+
+                        <div class="pagina-derecha" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                            <h2 style="width: 100%; border-bottom: 1px solid #3c1c4f; margin-bottom: 15px;">Regalo final</h2>
+                            
+                            <p style="text-align: center; font-size: 1.05rem; font-style: italic; color: #e6c6f2; line-height: 1.6; margin-bottom: 25px;">
+                                Para terminar, me gustaría hacerte un regalo, me habria encantado darte algo fisico pero el charco ese como siempre lo arruina todo. Te debo la vida mi amor, y se que esto no es suficiente para agradecer todo lo que te tengo que agradecer pero espero que te guste. Te amo mas que a nada.
+                            </p>
+
+                            <div style="margin-bottom: 25px;">
+                                <button class="btn" id="btn-reproducir-audio" onclick="reproducirAudioFinal()" style="font-size: 1rem; padding: 12px 30px; background-color: #3c1842; border: 2px solid #8c2ab4; box-shadow: 0 0 20px rgba(140, 42, 180, 0.5);">
+                                    🖤 Activar 🖤
+                                </button>
+                                <audio id="audio-final" src="https://raw.githubusercontent.com/nakanorida06-maker/aaa/main/Video%20Project%201.m4a" preload="auto"></audio>
+                            </div>
+
+                            <div class="grupo-botones" style="margin-top: auto;">
+                                <button class="btn" onclick="regresarDesdePaginaOcho()">⬅ Anterior</button>
+                                <button class="btn" onclick="irSiguiente(4)">Siguiente ➔</button>
+                            </div>
+                            <div class="paginacion" style="width: 100%; margin-top: 10px;"><span>Pág. 9 🖤</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 5 -->
+                <div class="seccion-libro" id="sec-5" style="z-index: 1;">
+                    <div class="pagina-doble">
+                        <div class="pagina-izquierda" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; width: 100%;">
+                            <h2 style="width: 100%; border-bottom: none; margin-bottom: 15px;">El primer mes de muchos</h2>
+                            
+                            <p style="text-align: center; font-size: 1.05rem; font-style: italic; color: #e6c6f2; line-height: 1.6; margin-bottom: 25px;">
+                                Como ya he dicho, esto es solo el principio. Gracias por darme el mejor més de mi vida, ha sido todo maravilloso, también gracias por dejarme entrar en tu vida y por hacerme sentir todo lo que siento. Nunca antes me había sentito tan amado y es la mejor sensación que existe. MUCHAS GRACIAS MI AMOR.
+
+PD: Espero un audio cursi de vuelta :)
+                            </p>
+
+                            <div style="margin-bottom: 25px;">
+                                <span style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #d4a5e8; text-shadow: 0 0 20px rgba(140, 42, 180, 0.8);">
+                                    Te amo, Ari 🖤
+                                </span>
+                            </div>
+
+                            <div class="grupo-botones">
+                                <button class="btn" onclick="irAnterior(4)">⬅ Anterior</button>
+                                <button class="btn" onclick="reiniciarLibro()">Cerrar / Volver al inicio 🥀</button>
+                            </div>
+                            <div class="paginacion" style="width: 100%;"><span>Pág. 10 🖤 Fin</span></div>
+                        </div>
+                        <div class="pagina-derecha" style="display: flex; justify-content: center; align-items: center; text-align: center; background: #0c0610;">
+                            <p style="font-style: italic; color: #5b2875; font-size: 1.2rem;">Fin</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA 7 GIGANTE CON LLUVIA MASIVA -->
+    <div id="pagina-7-mega">
+        <div id="contenedor-te-amos"></div>
+        <div id="texto-imposible">
+            Sueño con el día en que ya no tengamos que despedirnos a través de un botón de llamada, sino con un abrazo real, de esos que te desarman y te recargan el alma. Sé que ese momento llegará y cada día que pasa es uno menos para fundirnos en ese abrazo tan esperado. Próxima parada: Vernos en persona. Esto es solo el principio de nuestra historia.
+        </div>
+        <button id="btn-siete-a-ocho" onclick="continuarAlLibro()">Siguiente ➔</button>
+    </div>
+
+    <script>
+        const fechaInicio = new Date(Date.UTC(2026, 5, 28, 2, 30, 0)); 
+
+        function actualizarContador() {
+            const ahora = new Date();
+            const diferencia = ahora - fechaInicio;
+
+            if (diferencia > 0) {
+                const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+                const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+                const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
+
+                document.getElementById('dias').innerText = dias;
+                document.getElementById('horas').innerText = horas;
+                document.getElementById('minutos').innerText = minutos;
+                document.getElementById('segundos').innerText = segundos;
+            }
+        }
+        setInterval(actualizarContador, 1000);
+        actualizarContador();
+
+        function generarFrasesFondo() {
+            const contenedor = document.getElementById('frases-fondo');
+            const frases = [
+                "Te amo", "Mi vida", "Siempre juntos", "Ari", "Por siempre", 
+                "Nuestro amor", "Contigo todo", "Mi lugar favorito", "Te quiero"
+            ];
+            
+            const cantidad = 35;
+
+            for (let i = 0; i < cantidad; i++) {
+                const span = document.createElement('span');
+                span.className = 'frase-flotante';
+                span.innerText = frases[Math.floor(Math.random() * frases.length)];
+                
+                span.style.left = Math.random() * 92 + 4 + '%';
+                span.style.top = Math.random() * 92 + 4 + '%';
+                span.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
+                
+                contenedor.appendChild(span);
+
+                setInterval(() => {
+                    span.style.opacity = '0';
+                    setTimeout(() => {
+                        span.style.left = Math.random() * 92 + 4 + '%';
+                        span.style.top = Math.random() * 92 + 4 + '%';
+                        span.innerText = frases[Math.floor(Math.random() * frases.length)];
+                        span.style.opacity = Math.random() * 0.45 + 0.35;
+                    }, 1000);
+                }, Math.random() * 5000 + 3000);
+
+                setTimeout(() => {
+                    span.style.opacity = Math.random() * 0.45 + 0.35;
+                }, i * 200);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            generarFrasesFondo();
+            
+            const capaAnimacion = document.getElementById('capa-animacion');
+            const estanteria = document.getElementById('estanteria');
+
+            setTimeout(() => {
+                const letras = document.querySelectorAll('.letra');
+                letras.forEach(letra => {
+                    letra.classList.add('salida-abajo');
+                });
+            }, 3200);
+
+            setTimeout(() => {
+                capaAnimacion.style.display = 'none';
+                estanteria.classList.add('visible');
+            }, 4000);
+        });
+
+        /* --- FUNCIONES GENERALES PARA VENTANAS MODALES --- */
+        function abrirModal(idModal) {
+            document.getElementById(idModal).classList.add('activo');
+        }
+
+        function cerrarModal(idModal) {
+            document.getElementById(idModal).classList.remove('activo');
+        }
+
+        /* --- FUNCIONES DE NAVEGACIÓN DE LIBROS --- */
+        function abrirLibroPrincipal() {
+            document.getElementById('capa-inicial').classList.add('oculto');
+            document.getElementById('libro-contenedor-principal').classList.add('activo');
+        }
+
+        function abrirFondoCuatroBotones() {
+            document.getElementById('capa-inicial').classList.add('oculto');
+            document.getElementById('fondo-cuatro-botones').classList.add('activo');
+        }
+
+        function cerrarFondoCuatroBotones() {
+            document.getElementById('fondo-cuatro-botones').classList.remove('activo');
+            document.getElementById('capa-inicial').classList.remove('oculto');
+        }
+
+        let paginaActual = 1;
+        const totalPaginas = 5;
+
+        function actualizarPaginas() {
+            for (let i = 1; i <= totalPaginas; i++) {
+                const el = document.getElementById('sec-' + i);
+                if (i < paginaActual) {
+                    el.style.transform = 'rotateY(-180deg)';
+                    el.style.pointerEvents = 'none';
+                    el.style.zIndex = i;
+                } else if (i === paginaActual) {
+                    el.style.transform = 'rotateY(0deg)';
+                    el.style.pointerEvents = 'auto';
+                    el.style.zIndex = 10 + i;
+                } else {
+                    el.style.transform = 'rotateY(0deg)';
+                    el.style.pointerEvents = 'none';
+                    el.style.zIndex = totalPaginas - i;
+                }
+            }
+        }
+
+        function irSiguiente(numSeccion) {
+            const el = document.getElementById('sec-' + numSeccion);
+            el.style.transform = 'rotateY(-180deg)';
+            el.style.pointerEvents = 'none';
+            paginaActual = numSeccion + 1;
+            setTimeout(actualizarPaginas, 400);
+        }
+
+        function irAnterior(numSeccionAnterior) {
+            paginaActual = numSeccionAnterior;
+            const el = document.getElementById('sec-' + paginaActual);
+            el.style.transform = 'rotateY(0deg)';
+            el.style.pointerEvents = 'auto';
+            actualizarPaginas();
+        }
+
+        function abrirPaginaMega() {
+            document.getElementById('libro-contenedor-principal').classList.add('oculto');
+            document.getElementById('pagina-7-mega').classList.add('activa');
+            iniciarLluviaTeAmo();
+        }
+
+        function continuarAlLibro() {
+            document.getElementById('pagina-7-mega').classList.remove('activa');
+            document.getElementById('libro-contenedor-principal').classList.remove('oculto');
+            irSiguiente(3);
+        }
+
+        function regresarDesdePaginaOcho() {
+            irAnterior(3);
+        }
+
+        function reiniciarLibro() {
+            paginaActual = 1;
+            actualizarPaginas();
+            document.getElementById('cubierta').classList.remove('abierta');
+            document.getElementById('libro-contenedor-principal').classList.remove('activo');
+            document.getElementById('capa-inicial').classList.remove('oculto');
+        }
+
+        function reproducirAudioFinal() {
+            const audio = document.getElementById('audio-final');
+            const btn = document.getElementById('btn-reproducir-audio');
+            if (audio.paused) {
+                audio.play();
+                btn.innerText = "⏸ Pausar 🖤";
+            } else {
+                audio.pause();
+                btn.innerText = "Para mi todo 🖤";
+            }
+        }
+
+        function iniciarLluviaTeAmo() {
+            const contenedor = document.getElementById('contenedor-te-amos');
+            contenedor.innerHTML = '';
+            for (let i = 0; i < 40; i++) {
+                const div = document.createElement('div');
+                div.className = 'te-amo-movil';
+                div.innerText = 'Te amo';
+                div.style.left = Math.random() * 100 + 'vw';
+                div.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
+                div.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                div.style.animationDelay = (Math.random() * 3) + 's';
+                div.style.color = Math.random() > 0.5 ? '#d4a5e8' : '#b091be';
+                contenedor.appendChild(div);
+            }
+        }
+
+        actualizarPaginas();
+    </script>
+</body>
+</html>
